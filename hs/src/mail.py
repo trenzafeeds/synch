@@ -1,27 +1,32 @@
 """
 mail.py
-For facilitation the messaging
-of the HS algorithm.
+Enumerators and a class definition
+for inter-process messaging.
 
 Kat Cannon-MacMartin
 """
 
 from header import *
 
-# Message Flags
-class mf(Enum):
-    IN = 0
-    OUT = 1
-    L_DECLARE = 3
+# Enumerators
 
-# Message queues
-class mq(Enum):
+# Message flag
+class mf(Enum):
+    IN = 0           # Inbound message
+    OUT = 1          # Outbound message
+    L_DECLARE = 3    # Special message type for ending
+                     # the algorithm and declaring a leader
+
+# Flag to differentiate
+# message queue directions
+class mq(Enum):     
     PLUS = 0
     MINUS = 1
-    
-class Message:
 
+    
+# Message class
+class Message:
     def __init__(self, uid, flag, hopc=1):
-        self.uid = uid
-        self.flag = flag
-        self.hopc = hopc
+        self.uid = uid    # UID of sender
+        self.flag = flag  # mf enumerator
+        self.hopc = hopc  # Hop count (decreased each send)

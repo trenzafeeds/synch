@@ -10,7 +10,10 @@ import random
 import copy
 import sys
 
-# Also some utility functions below
+"""
+Below are some utility functions for
+dealing with Enumerator classes.
+"""
 
 def ev(enumerator):
     return enumerator.value

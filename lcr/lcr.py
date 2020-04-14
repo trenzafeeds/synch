@@ -3,7 +3,8 @@ lcr.py
 Toy version of the LCR 
 algorithm in Python
 
-Kat Cannon-MacMartin
+Kat Cannon-MacMartin | Marlboro College
+guthrie@marlboro.edu
 
 Usage:
 lcr creates a collection of processes
@@ -116,9 +117,12 @@ def main(low, high):
         procs[i].start()
     for i in range(n):
         procs[i].join()
+        if retdict[ring[i]][0] == Status.LEADER:
+            leader_index = i
         
     print "Ring structure:"
-    for i in range(n):
+    for j in range(n):
+        i = (j + leader_index) % n
         #print "Process with UID", uids[i], ":", retdict[uids[i]][0],\
             #"messages recieved, sent:", retdict[uids[i]][1]
         print "   ", ring[i], "--"
