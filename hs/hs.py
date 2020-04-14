@@ -60,7 +60,7 @@ def protocol(node):
     for final in [mq.PLUS, mq.MINUS]:        # After the node exits the while loop
         recsent[1] += node.sendm(final)      # of the main algorithm, the queued L_DECLARE
                                              # messages are sent before it finishes
-    node.ret[node.u] = (node.status, recsent, node.phase)  # Analytical information is stored in the
+    node.ret[node.u] = [node.status, recsent, node.phase]  # Analytical information is stored in the
                                                            # inter-process shared dictionary
     return node.status
 
@@ -101,16 +101,22 @@ def main(low, high, py_out=False):
         if retdict[ring[i]][0] == Status.LEADER:
             leader_index = i
 
-    # Prints results and data in readable format
-    print "Ring structure:"
-    print "------------------------------------"
-    for j in range(n):
-        i = (j + leader_index) % n
-        print "   Node", ring[i]
-        print "  ", retdict[ring[i]][0].name
-        print "   (rec, sent):", retdict[ring[i]][1]
-        print "   phase:", retdict[ring[i]][2]
+    if py_out:
+        mutable_dict = copy.deepcopy(retdict)
+        for proc in uids:
+            mutable_dict[proc][0] = ev(mutable_dict[proc][0])
+        sys.stdout.write(str(mutable_dict))
+        sys.stdout.flush()
+    else:
+        print "Ring structure:"
         print "------------------------------------"
+        for j in range(n):
+            i = (j + leader_index) % n
+            print "   Node", ring[i]
+            print "  ", retdict[ring[i]][0].name
+            print "   (rec, sent):", retdict[ring[i]][1]
+            print "   phase:", retdict[ring[i]][2]
+            print "------------------------------------"
 
 if __name__=="__main__":
     py_out = False

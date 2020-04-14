@@ -88,7 +88,7 @@ def protocol(node):
                 recsent[1] += 1
                 node.oq.put(node.send)
 
-    node.ret[node.u] = (node.status, recsent)
+    node.ret[node.u] = [node.status, recsent]
     return node.status
 
 def main(low, high, py_out=False):
@@ -119,16 +119,21 @@ def main(low, high, py_out=False):
         procs[i].join()
         if retdict[ring[i]][0] == Status.LEADER:
             leader_index = i
-        
-    print "Ring structure:"
-    for j in range(n):
-        i = (j + leader_index) % n
-        #print "Process with UID", uids[i], ":", retdict[uids[i]][0],\
-            #"messages recieved, sent:", retdict[uids[i]][1]
-        print "   ", ring[i], "--"
-        print "   ", retdict[ring[i]][0]
-        print "   (rec, sent):", retdict[ring[i]][1]
-        print "|"
+
+    if py_out:
+        mutable_dict = copy.deepcopy(retdict)
+        for proc in uids:
+            mutable_dict[proc][0] = mutable_dict[proc][0].value
+        sys.stdout.write(str(mutable_dict))
+        sys.stdout.flush()
+    else:
+        print "Ring structure:"
+        for j in range(n):
+            i = (j + leader_index) % n
+            print "   ", ring[i], "--"
+            print "   ", retdict[ring[i]][0]
+            print "   (rec, sent):", retdict[ring[i]][1]
+            print "|"
 
 if __name__=="__main__":
     py_out = False
