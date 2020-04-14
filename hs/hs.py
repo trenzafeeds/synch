@@ -60,12 +60,11 @@ def protocol(node):
     for final in [mq.PLUS, mq.MINUS]:        # After the node exits the while loop
         recsent[1] += node.sendm(final)      # of the main algorithm, the queued L_DECLARE
                                              # messages are sent before it finishes
-    node.ret[node.u] = (node.status,\        # Analytical information is stored in the
-                        recsent,\            # inter-process shared dictionary
-                        node.phase)
+    node.ret[node.u] = (node.status, recsent, node.phase)  # Analytical information is stored in the
+                                                           # inter-process shared dictionary
     return node.status
 
-def main(low, high):
+def main(low, high, py_out=False):
     low = int(low)                       # low is the smallest UID
     high = int(high)                     # high is the greatest UID + 1
     if low == high:                      # if low and high were not both provided by the user
@@ -114,9 +113,21 @@ def main(low, high):
         print "------------------------------------"
 
 if __name__=="__main__":
-    if len(sys.argv) == 2:
-        main(sys.argv[1], sys.argv[1])
-    elif len(sys.argv) == 3:
-        main(sys.argv[1], sys.argv[2])
+    py_out = False
+    ao = 0          # ao short for Argument Offset
+    if len(sys.argv) > 1:
+        try: int(argv[1])
+        except:
+            if sys.argv[1] in ["-p", "--python"]:
+                py_out = True
+                ao = 1
+            else:
+                print "Error: invalid argument:", argv[1]
+        if len(sys.argv) == 2 + ao:
+            main(sys.argv[1 + ao], sys.argv[1 + ao], py_out)
+        elif len(sys.argv) == 3 + ao:
+            main(sys.argv[1 + ao], sys.argv[2 + ao], py_out)
+        else:
+            main(0, 0, py_out)
     else:
-        main(0, 0)
+        main(0, 0, py_out)

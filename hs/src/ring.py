@@ -21,8 +21,9 @@ class Node:
 
     def __init__(self, uid, iq, oq, ret):
         self.u = uid                               # Process UID
-        self.send = [Message(self.u, mf.OUT, 1),\  # send array has two entries corresponding
-                     Message(self.u, mf.OUT, 1)]   # to [direction +, direction -]. It is
+        self.send = [Message(self.u, mf.OUT, 1), Message(self.u, mf.OUT, 1)]
+                                                   # send array has two entries corresponding
+                                                   # to [direction +, direction -]. It is
                                                    # initialized with first-round messages for
                                                    # each direction.
         self.status = Status.UNKNOWN               # Internal leader information
@@ -133,8 +134,8 @@ class Node:
             self.phase_counter = 0                            # own messages inbound, Node.phase
             self.phase += 1                                   # is updated and new outbound messages
             for outdir in [mq.PLUS, mq.MINUS]:                # with a longer trajectory (higher
-                self.send[ev(outdir)] =\                      # starting hopc value) are sent
-                Message(self.u, mf.OUT, 2**self.phase)
+                                                              # starting hopc value) are sent
+                self.send[ev(outdir)] = Message(self.u, mf.OUT, 2**self.phase)
 
         return rec_count
             
