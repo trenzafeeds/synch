@@ -31,12 +31,16 @@ def main(bottom, top, reps=10):
     paths = generate_paths()
 
     if os.path.isfile(paths['log']):
-        print "Deleting previous log file, hope you saved it!"
-        os.system("rm " + paths['log'])
+        suff = 1
+        while os.path.isfile(paths['log'] + "_" + str(suff)):
+            suff += 1
+        print "Saving old log file as log_" + str(suff)
+        os.system("mv " + paths['log'] + " " + paths['log'] + "_" + str(suff))
     
     for p_count in xrange(bottom, top):
         echo_write(paths['log'], "--" + str(p_count))
         for alg in ['lcr', 'hs']:
+            echo_write(paths['log'], ".." + alg)
             print "*** Starting " + alg + " with " + str(p_count) + " processes... ***"
             for i in xrange(reps):
                 cmnd = "python " + paths[alg] + " -p " + str(p_count) + " >> " + paths['log']
